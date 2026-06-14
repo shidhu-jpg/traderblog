@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">MH</div>
+    <div class="logo-text"><strong>MNH Blog</strong><span>Admin Panel</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="dashboard.html" class="nav-item active"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+    <a href="new-post.html"  class="nav-item"><i class="fa-solid fa-pen-to-square"></i> New Post</a>
+    <a href="posts.html"     class="nav-item"><i class="fa-solid fa-list"></i> All Posts</a>
+    <a href="subscribers.html" class="nav-item"><i class="fa-solid fa-users"></i> Subscribers</a>
+    <a href="messages.html"  class="nav-item"><i class="fa-solid fa-envelope"></i> Messages</a>
+    <a href="setup.html"     class="nav-item"><i class="fa-solid fa-gear"></i> Setup Guide</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="../index.html" target="_blank" class="nav-item"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Blog</a>
+    <button class="nav-item btn-logout" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+  </div>
+</aside>
+
+<main class="main-content">
+  <header class="top-bar">
+    <div>
+      <h1>Dashboard</h1>
+      <p class="top-sub" id="welcome-msg">Loading...</p>
+    </div>
+    <a href="new-post.html" class="btn-create"><i class="fa-solid fa-plus"></i> New Post</a>
+  </header>
+
+  <!-- STATS -->
+  <div class="stats-grid" id="stats-grid">
+    <div class="stat-card"><div class="stat-icon" style="background:#F5C51820;color:#F5C518">📝</div><div><div class="stat-val" id="st-posts">—</div><div class="stat-lbl">Total Posts</div></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#4CAF5020;color:#4CAF50">👥</div><div><div class="stat-val" id="st-subs">—</div><div class="stat-lbl">Subscribers</div></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#1E82C820;color:#42A5F5">💬</div><div><div class="stat-val" id="st-msgs">—</div><div class="stat-lbl">Messages</div></div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:#9C27B020;color:#CE93D8">📈</div><div><div class="stat-val" id="st-trading">—</div><div class="stat-lbl">Trading Posts</div></div></div>
+  </div>
+
+  <!-- SEED NOTICE (shown when db is empty) -->
+  <div id="seed-banner" style="display:none;margin:0 2rem">
+    <div style="background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.2);border-radius:12px;padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem">
+      <div>
+        <strong style="color:#F5C518">Your blog has no posts yet.</strong>
+        <p style="color:#8892A4;font-size:.88rem;margin-top:.25rem">Click to load 9 sample articles across all categories — you can edit or delete them anytime.</p>
+      </div>
+      <button class="btn-create" id="seed-btn" style="white-space:nowrap"><i class="fa-solid fa-seedling"></i> Seed Sample Posts</button>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="section-block">
+    <h3 style="margin-bottom:1.25rem">Quick Actions</h3>
+    <div class="quick-grid">
+      <a href="new-post.html?cat=trading" class="quick-card qc-trading"><span class="qc-icon">📈</span><strong>New Trading Post</strong><span>Options, equities, analysis</span></a>
+      <a href="new-post.html?cat=books"   class="quick-card qc-books"><span class="qc-icon">📚</span><strong>New Book Review</strong><span>Share what you're reading</span></a>
+      <a href="new-post.html?cat=trips"   class="quick-card qc-trips"><span class="qc-icon">🌍</span><strong>New Trip Story</strong><span>Document your travels</span></a>
+      <a href="new-post.html?cat=cooking" class="quick-card qc-cooking"><span class="qc-icon">🍳</span><strong>New Recipe</strong><span>Share a cooking experiment</span></a>
+    </div>
+  </div>
+
+  <!-- RECENT POSTS -->
+  <div class="section-block">
+    <div class="section-block-header">
+      <h3>Recent Posts</h3>
+      <a href="posts.html">View All →</a>
+    </div>
+    <div class="table-wrap">
+      <table class="posts-table">
+        <thead><tr><th>Emoji</th><th>Title</th><th>Category</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody id="posts-tbody"><tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--gray)">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SUBSCRIBERS + MESSAGES -->
+  <div class="two-col">
+    <div class="section-block">
+      <div class="section-block-header"><h3>Recent Subscribers</h3><a href="subscribers.html">View All →</a></div>
+      <div id="subs-list"><div style="color:var(--gray);font-size:.85rem;text-align:center;padding:1.5rem">Loading...</div></div>
+    </div>
+    <div class="section-block">
+      <div class="section-block-header"><h3>Recent Messages</h3><a href="messages.html">View All →</a></div>
+      <div id="msgs-list"><div style="color:var(--gray);font-size:.85rem;text-align:center;padding:1.5rem">Loading...</div></div>
+    </div>
+  </div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/db.js"></script>
+<script>
+  const catLabel = cat => ({ trading:'📈 Trading', books:'📚 Books', trips:'🌍 Trips', cooking:'🍳 Cooking' }[cat] || cat);
+  const fmt = iso => new Date(iso).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+
+  // Auth guard — redirect to login if not signed in
+  dbOnAuthChange(async user => {
+    if (!user) { window.location.href = 'index.html'; return; }
+
+    document.getElementById('welcome-msg').textContent = `Signed in as ${user.email}. Here's what's happening on your blog.`;
+
+    // Load all data in parallel
+    const [posts, subs, msgs] = await Promise.all([dbGetPosts(), dbGetSubscribers(), dbGetMessages()]);
+
+    // Stats
+    document.getElementById('st-posts').textContent   = posts.length;
+    document.getElementById('st-subs').textContent    = subs.length;
+    document.getElementById('st-msgs').textContent    = msgs.length;
+    document.getElementById('st-trading').textContent = posts.filter(p => p.category === 'trading').length;
+
+    // Seed banner (shown only if db is completely empty)
+    if (!posts.length) document.getElementById('seed-banner').style.display = 'block';
+
+    // Posts table
+    const tbody = document.getElementById('posts-tbody');
+    tbody.innerHTML = posts.length
+      ? posts.slice(0, 8).map(p => `
+          <tr>
+            <td style="text-align:center;font-size:1.4rem">${p.emoji || '📝'}</td>
+            <td class="post-title-cell">${p.title}</td>
+            <td>${catLabel(p.category)}</td>
+            <td>${fmt(p.date)}</td>
+            <td>
+              <div class="action-btns">
+                <a href="../post.html?id=${p.id}" target="_blank" class="action-btn view-btn" title="View"><i class="fa-solid fa-eye"></i></a>
+                <a href="new-post.html?id=${p.id}" class="action-btn edit-btn" title="Edit"><i class="fa-solid fa-pen"></i></a>
+                <button class="action-btn del-btn" onclick="delPost('${p.id}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </td>
+          </tr>`).join('')
+      : '<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--gray)">No posts yet.</td></tr>';
+
+    // Subscribers
+    document.getElementById('subs-list').innerHTML = subs.length
+      ? subs.slice(0, 5).map(s => `<div class="list-item"><i class="fa-solid fa-envelope" style="color:var(--green)"></i> ${s.email}</div>`).join('')
+      : '<p class="empty-msg">No subscribers yet. Promote your newsletter!</p>';
+
+    // Messages
+    document.getElementById('msgs-list').innerHTML = msgs.length
+      ? msgs.slice(0, 5).map(m => `
+          <div class="list-item">
+            <i class="fa-solid fa-user" style="color:var(--yellow)"></i>
+            <div>
+              <strong>${m.firstName || ''} ${m.lastName || ''}</strong>
+              <span style="color:var(--gray);font-size:.78rem;display:block">${m.subject || 'General'} · ${fmt(m.date)}</span>
+            </div>
+          </div>`).join('')
+      : '<p class="empty-msg">No messages yet.</p>';
+  });
+
+  // Seed posts
+  document.getElementById('seed-btn')?.addEventListener('click', async () => {
+    const btn = document.getElementById('seed-btn');
+    btn.textContent = 'Seeding...'; btn.disabled = true;
+    await dbSeedPosts();
+    location.reload();
+  });
+
+  // Delete post
+  async function delPost(id) {
+    if (!confirm('Delete this post permanently? This cannot be undone.')) return;
+    await dbDeletePost(id);
+    location.reload();
+  }
+
+  // Logout
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    await dbSignOut();
+    window.location.href = 'index.html';
+  });
+</script>
+</body>
+</html>

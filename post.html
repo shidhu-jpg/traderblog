@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Article | ManjunathswamyNH</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/premium.css" />
+  <style>
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      color: var(--gray);
+      margin-bottom: 2rem;
+      transition: var(--transition);
+    }
+    .back-link:hover { color: var(--yellow); gap: 0.6rem; }
+    .post-share {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1.5rem;
+      background: var(--off-white);
+      border-radius: var(--radius);
+      margin-top: 3rem;
+    }
+    .post-share span { font-size: 0.85rem; font-weight: 600; color: var(--gray); }
+    .share-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1.1rem;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+    .share-wa  { background: #25D366; color: white; }
+    .share-tw  { background: #1DA1F2; color: white; }
+    .share-li  { background: #0A66C2; color: white; }
+    .share-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    .related-section { background: var(--off-white); padding: 4rem 0; }
+    .author-card {
+      background: var(--dark);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      margin-top: 3rem;
+      border: 1px solid var(--border);
+    }
+    .author-card .av {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--yellow), var(--green));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; font-weight: 900; color: var(--dark);
+      flex-shrink: 0;
+    }
+    .author-card h4 { color: white; margin-bottom: 0.35rem; }
+    .author-card p  { color: var(--gray); font-size: 0.87rem; line-height: 1.6; }
+    .author-card .socials { display: flex; gap: 0.75rem; margin-top: 1rem; }
+    .author-card .socials a {
+      color: var(--gray);
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+    .author-card .socials a:hover { color: var(--yellow); }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-icon">MH</div>
+      <div class="logo-text"><strong>ManjunathswamyNH</strong><span>Trader · Thinker · Explorer</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="trading.html">Trading</a></li>
+      <li><a href="book-reviews.html">Books</a></li>
+      <li><a href="trips.html">Trips</a></li>
+      <li><a href="cooking.html">Cooking</a></li>
+      <li><a href="spirituality.html">Spirituality</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <div class="nav-social flex gap-1">
+        <a href="https://www.instagram.com/manjunathswamynh_25" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://x.com/mnhiremath25" target="_blank" rel="noopener"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="https://wa.me/919449174106" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i></a>
+      </div>
+      <a href="index.html#newsletter" class="btn btn-primary btn-sm">Subscribe</a>
+    </div>
+    <button class="hamburger"><i class="fa-solid fa-bars"></i></button>
+  </div>
+</nav>
+
+<!-- POST HEADER -->
+<div class="post-header">
+  <div class="container-sm">
+    <div id="post-container">
+      <div class="post-meta">
+        <span class="tag tag-dark" id="post-cat">Loading...</span>
+        <span class="item"><i class="fa-regular fa-calendar"></i> <span id="post-date"></span></span>
+        <span class="item"><i class="fa-regular fa-clock"></i> <span id="post-read"></span></span>
+      </div>
+      <h1 id="post-title" style="color:white;margin-top:1.25rem">Loading...</h1>
+    </div>
+  </div>
+</div>
+
+<!-- POST BODY -->
+<div class="post-content">
+  <div class="container-sm">
+    <div class="post-body" id="post-body">
+      <!-- Rendered by blog.js -->
+    </div>
+
+    <!-- SHARE -->
+    <div class="post-share">
+      <span>Share this article:</span>
+      <a class="share-btn share-wa" id="share-wa" href="#" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+      <a class="share-btn share-tw" id="share-tw" href="#" target="_blank" rel="noopener"><i class="fa-brands fa-x-twitter"></i> X</a>
+      <a class="share-btn share-li" id="share-li" href="#" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin-in"></i> LinkedIn</a>
+    </div>
+
+    <!-- AUTHOR BIO -->
+    <div class="author-card">
+      <div class="av">MH</div>
+      <div>
+        <h4>Manjunathswamy Hiremath</h4>
+        <p>Trader · Agriculture Research Scholar · Former PSU Banking Professional<br>Sharing real insights on markets, books, travel and food from Karnataka, India.</p>
+        <div class="socials">
+          <a href="https://www.instagram.com/manjunathswamynh_25" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
+          <a href="https://x.com/mnhiremath25" target="_blank" rel="noopener"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="https://wa.me/919449174106" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RELATED -->
+<section class="related-section">
+  <div class="container">
+    <div class="section-header"><h3>More Like This</h3></div>
+    <div class="grid-3" id="related-posts"></div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="section newsletter-section" style="padding:4rem 0">
+  <div class="container">
+    <div class="newsletter-inner">
+      <div class="section-label light">Stay Updated</div>
+      <h2>Enjoyed the article?</h2>
+      <p>Subscribe to get new articles delivered straight to your inbox — no spam, ever.</p>
+      <form class="newsletter-form" onsubmit="return false">
+        <input type="email" placeholder="Your email address" required />
+        <button type="submit" class="btn btn-primary">Subscribe Free</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-bottom" style="border-top:1px solid var(--border);padding-top:1.5rem;margin-top:0">
+      <span>© 2026 ManjunathswamyNH. All rights reserved.</span>
+      <div class="flex gap-2">
+        <a href="index.html">Home</a><a href="blog.html">All Articles</a><a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/919449174106" target="_blank" rel="noopener" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="js/config.js"></script>
+<script src="js/db.js"></script>
+<script src="js/blog.js"></script>
+<script src="js/main.js"></script>
+<script>
+  // Share links
+  document.addEventListener('DOMContentLoaded', () => {
+    const url   = encodeURIComponent(window.location.href);
+    const title = encodeURIComponent(document.getElementById('post-title').textContent);
+    document.getElementById('share-wa').href = `https://api.whatsapp.com/send?text=${title}%20${url}`;
+    document.getElementById('share-tw').href = `https://x.com/intent/tweet?text=${title}&url=${url}`;
+    document.getElementById('share-li').href = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+  });
+</script>
+<script src="js/animations.js"></script>
+</body>
+</html>

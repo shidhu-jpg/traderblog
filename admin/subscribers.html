@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subscribers | Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo"><div class="logo-icon">MH</div><div class="logo-text"><strong>MNH Blog</strong><span>Admin Panel</span></div></div>
+  <nav class="sidebar-nav">
+    <a href="dashboard.html"   class="nav-item"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+    <a href="new-post.html"    class="nav-item"><i class="fa-solid fa-pen-to-square"></i> New Post</a>
+    <a href="posts.html"       class="nav-item"><i class="fa-solid fa-list"></i> All Posts</a>
+    <a href="subscribers.html" class="nav-item active"><i class="fa-solid fa-users"></i> Subscribers</a>
+    <a href="messages.html"    class="nav-item"><i class="fa-solid fa-envelope"></i> Messages</a>
+    <a href="setup.html"       class="nav-item"><i class="fa-solid fa-gear"></i> Setup Guide</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="../index.html" target="_blank" class="nav-item"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Blog</a>
+    <button class="nav-item btn-logout" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+  </div>
+</aside>
+
+<main class="main-content">
+  <header class="top-bar">
+    <div><h1>Newsletter Subscribers</h1><p class="top-sub" id="count">Loading...</p></div>
+    <button class="btn-secondary" id="export-btn"><i class="fa-solid fa-download"></i> Export CSV</button>
+  </header>
+
+  <div class="section-block">
+    <div class="table-wrap">
+      <table class="posts-table">
+        <thead><tr><th>#</th><th>Email Address</th><th>Subscribed On</th><th>Actions</th></tr></thead>
+        <tbody id="tbody"><tr><td colspan="4" style="text-align:center;padding:2rem;color:var(--gray)">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/db.js"></script>
+<script>
+  let subs = [];
+  const fmt = iso => new Date(iso).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+
+  dbOnAuthChange(async user => {
+    if (!user) { window.location.href = 'index.html'; return; }
+    subs = await dbGetSubscribers();
+    render();
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    await dbSignOut(); window.location.href = 'index.html';
+  });
+
+  function render() {
+    document.getElementById('count').textContent = `${subs.length} subscriber${subs.length !== 1 ? 's' : ''} · stored in Firebase`;
+    document.getElementById('tbody').innerHTML = subs.length
+      ? subs.map((s, i) => `
+          <tr>
+            <td>${i + 1}</td>
+            <td><i class="fa-solid fa-envelope" style="color:var(--green);margin-right:.5rem"></i>${s.email}</td>
+            <td>${fmt(s.date)}</td>
+            <td>
+              <div class="action-btns">
+                <a href="mailto:${s.email}" class="action-btn view-btn" title="Send email"><i class="fa-solid fa-envelope"></i></a>
+                <button class="action-btn del-btn" onclick="del('${s.id}')" title="Remove subscriber"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </td>
+          </tr>`).join('')
+      : '<tr><td colspan="4" style="text-align:center;color:var(--gray);padding:3rem">No subscribers yet. Share your blog to grow your list!</td></tr>';
+  }
+
+  async function del(id) {
+    if (!confirm('Remove this subscriber?')) return;
+    await dbDeleteSubscriber(id);
+    subs = subs.filter(s => s.id !== id);
+    render();
+  }
+
+  document.getElementById('export-btn').addEventListener('click', () => {
+    if (!subs.length) { alert('No subscribers to export.'); return; }
+    const csv = 'Email,Subscribed Date\n' + subs.map(s => `${s.email},${s.date}`).join('\n');
+    const a = document.createElement('a');
+    a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+    a.download = 'subscribers.csv';
+    a.click();
+  });
+</script>
+</body>
+</html>

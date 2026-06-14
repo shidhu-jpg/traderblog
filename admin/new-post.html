@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Write Post | Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Quill rich-text editor -->
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" />
+  <link rel="stylesheet" href="admin.css" />
+  <style>
+    .editor-wrap .ql-container{min-height:340px;font-size:1rem;font-family:'Inter',sans-serif;border-radius:0 0 10px 10px;border-color:var(--border);background:var(--dark-3);color:white}
+    .editor-wrap .ql-toolbar{border-color:var(--border);border-radius:10px 10px 0 0;background:var(--dark-4)}
+    .editor-wrap .ql-editor{color:white;min-height:340px}
+    .editor-wrap .ql-editor.ql-blank::before{color:var(--gray)}
+    .editor-wrap .ql-stroke{stroke:var(--gray-light) !important}
+    .editor-wrap .ql-fill{fill:var(--gray-light) !important}
+    .editor-wrap .ql-picker-label{color:var(--gray-light) !important}
+    .editor-wrap .ql-picker-options{background:var(--dark-4) !important}
+    .preview-card{background:white;border-radius:12px;overflow:hidden;border:1px solid #E5E9F0;max-width:100%}
+    .preview-img{height:140px;background:#1E2130;display:flex;align-items:center;justify-content:center;font-size:2.8rem}
+    .preview-body{padding:1.1rem}
+    .preview-title{font-weight:700;font-size:.95rem;color:#1A1E2E;margin-bottom:.3rem;line-height:1.4}
+    .preview-excerpt{font-size:.8rem;color:#8892A4;line-height:1.55}
+    .preview-meta{display:flex;gap:.5rem;margin-top:.6rem;font-size:.72rem;color:#8892A4}
+    .save-row{display:flex;gap:.75rem;align-items:center}
+    #save-status{font-size:.82rem;color:var(--gray)}
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo"><div class="logo-icon">MH</div><div class="logo-text"><strong>MNH Blog</strong><span>Admin Panel</span></div></div>
+  <nav class="sidebar-nav">
+    <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+    <a href="new-post.html"  class="nav-item active"><i class="fa-solid fa-pen-to-square"></i> New Post</a>
+    <a href="posts.html"     class="nav-item"><i class="fa-solid fa-list"></i> All Posts</a>
+    <a href="subscribers.html" class="nav-item"><i class="fa-solid fa-users"></i> Subscribers</a>
+    <a href="messages.html"  class="nav-item"><i class="fa-solid fa-envelope"></i> Messages</a>
+    <a href="setup.html"     class="nav-item"><i class="fa-solid fa-gear"></i> Setup Guide</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="../index.html" target="_blank" class="nav-item"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Blog</a>
+    <button class="nav-item btn-logout" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+  </div>
+</aside>
+
+<main class="main-content">
+  <header class="top-bar">
+    <div>
+      <h1 id="page-heading">New Post</h1>
+      <p class="top-sub" id="page-sub">Write and publish a new article</p>
+    </div>
+    <div class="save-row">
+      <span id="save-status"></span>
+      <button class="btn-secondary" id="discard-btn"><i class="fa-solid fa-xmark"></i> Discard</button>
+      <button class="btn-create"    id="save-btn"><i class="fa-solid fa-cloud-arrow-up"></i> Publish Live</button>
+    </div>
+  </header>
+
+  <div class="editor-layout">
+    <!-- EDITOR -->
+    <div class="editor-main">
+      <div class="section-block">
+        <div class="form-group">
+          <label>Post Title <span class="req">*</span></label>
+          <input type="text" id="post-title" placeholder="Write a compelling title..." class="input-lg" />
+        </div>
+        <div class="form-group">
+          <label>Short Excerpt <span class="req">*</span></label>
+          <textarea id="post-excerpt" placeholder="A 1–2 sentence summary shown on blog cards..." rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Content <span class="req">*</span></label>
+          <div class="editor-wrap">
+            <div id="quill-editor"></div>
+          </div>
+          <span class="field-hint">Use H2 / H3 headings to structure your article. Bold for emphasis. Blockquote for pull-quotes.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS SIDEBAR -->
+    <div class="editor-sidebar">
+      <div class="section-block">
+        <h4 style="margin-bottom:1.25rem;color:white">Post Settings</h4>
+        <div class="form-group">
+          <label>Category <span class="req">*</span></label>
+          <select id="post-cat">
+            <option value="">Select category</option>
+            <option value="trading">📈 Trading</option>
+            <option value="books">📚 Book Reviews</option>
+            <option value="trips">🌍 Trips</option>
+            <option value="cooking">🍳 Cooking</option>
+            <option value="spirituality">🕉️ Spirituality</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Emoji / Thumbnail Icon</label>
+          <input type="text" id="post-emoji" placeholder="e.g. 📊 or 📚" maxlength="4" />
+          <span class="field-hint">One emoji used as the post's visual thumbnail.</span>
+        </div>
+        <div class="form-group">
+          <label>Read Time</label>
+          <input type="text" id="post-readtime" placeholder="e.g. 5 min" />
+        </div>
+        <div class="form-group">
+          <label>Publication Date</label>
+          <input type="date" id="post-date" />
+        </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer">
+            <input type="checkbox" id="post-featured" style="width:auto;accent-color:var(--yellow)" />
+            Mark as Featured Post ⭐
+          </label>
+          <span class="field-hint">Featured post appears in the homepage hero section.</span>
+        </div>
+      </div>
+
+      <!-- LIVE CARD PREVIEW -->
+      <div class="section-block">
+        <h4 style="margin-bottom:1.1rem;color:white">Live Card Preview</h4>
+        <div class="preview-card">
+          <div class="preview-img" id="prev-emoji">📝</div>
+          <div class="preview-body">
+            <div class="preview-title"   id="prev-title">Your title will appear here...</div>
+            <div class="preview-excerpt" id="prev-excerpt">Your excerpt will appear here as a short description.</div>
+            <div class="preview-meta">
+              <span id="prev-cat">Category</span><span>·</span><span id="prev-rt">5 min</span> read
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/db.js"></script>
+<script>
+  const editId = new URLSearchParams(location.search).get('id');
+  let quill;
+
+  // Auth guard
+  dbOnAuthChange(async user => {
+    if (!user) { window.location.href = 'index.html'; return; }
+    initEditor();
+    if (editId) await loadForEdit(editId);
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    await dbSignOut(); window.location.href = 'index.html';
+  });
+
+  function initEditor() {
+    quill = new Quill('#quill-editor', {
+      theme: 'snow',
+      placeholder: 'Start writing your article here...\n\nTip: Use H2 headings to structure sections. Use the blockquote tool for pull-quotes.',
+      modules: {
+        toolbar: [
+          [{ header: [2, 3, false] }],
+          ['bold', 'italic', 'underline'],
+          ['blockquote', 'code-block'],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          ['link'],
+          ['clean'],
+        ],
+      },
+    });
+
+    // Set default date
+    document.getElementById('post-date').value = new Date().toISOString().split('T')[0];
+
+    // Pre-fill category from URL param
+    const urlCat = new URLSearchParams(location.search).get('cat');
+    if (urlCat) document.getElementById('post-cat').value = urlCat;
+
+    // Live preview wiring
+    const fields = ['post-title','post-excerpt','post-cat','post-emoji','post-readtime'];
+    fields.forEach(id => document.getElementById(id).addEventListener('input', updatePreview));
+    document.getElementById('post-cat').addEventListener('change', updatePreview);
+  }
+
+  async function loadForEdit(id) {
+    document.getElementById('page-heading').textContent = 'Edit Post';
+    document.getElementById('page-sub').textContent     = 'Update and republish your article';
+    document.getElementById('save-btn').innerHTML       = '<i class="fa-solid fa-cloud-arrow-up"></i> Update Live';
+
+    const post = await dbGetPost(id);
+    if (!post) { alert('Post not found.'); window.location.href = 'posts.html'; return; }
+
+    document.getElementById('post-title').value    = post.title;
+    document.getElementById('post-excerpt').value  = post.excerpt;
+    document.getElementById('post-cat').value      = post.category;
+    document.getElementById('post-emoji').value    = post.emoji || '';
+    document.getElementById('post-readtime').value = post.readTime || '5 min';
+    document.getElementById('post-date').value     = post.date;
+    document.getElementById('post-featured').checked = post.featured || false;
+    if (post.content) quill.root.innerHTML = post.content;
+    updatePreview();
+  }
+
+  function updatePreview() {
+    document.getElementById('prev-title').textContent   = document.getElementById('post-title').value   || 'Your title will appear here...';
+    document.getElementById('prev-excerpt').textContent = document.getElementById('post-excerpt').value || 'Your excerpt will appear here...';
+    document.getElementById('prev-cat').textContent     = document.getElementById('post-cat').value     || 'Category';
+    document.getElementById('prev-rt').textContent      = document.getElementById('post-readtime').value || '5 min';
+    document.getElementById('prev-emoji').textContent   = document.getElementById('post-emoji').value   || '📝';
+  }
+
+  document.getElementById('save-btn').addEventListener('click', async () => {
+    const title   = document.getElementById('post-title').value.trim();
+    const excerpt = document.getElementById('post-excerpt').value.trim();
+    const category= document.getElementById('post-cat').value;
+    const content = quill.root.innerHTML;
+
+    if (!title || !excerpt || !category || quill.getText().trim().length < 10) {
+      alert('Please fill in Title, Excerpt, Category, and at least some Content before publishing.'); return;
+    }
+
+    const btn = document.getElementById('save-btn');
+    const status = document.getElementById('save-status');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publishing...';
+    status.textContent = '';
+
+    const data = {
+      title, excerpt, category, content,
+      emoji:    document.getElementById('post-emoji').value || '📝',
+      readTime: document.getElementById('post-readtime').value || '5 min',
+      date:     document.getElementById('post-date').value || new Date().toISOString().split('T')[0],
+      featured: document.getElementById('post-featured').checked,
+    };
+
+    try {
+      if (editId) {
+        await dbUpdatePost(editId, data);
+        status.textContent = '✅ Updated and live!';
+      } else {
+        await dbCreatePost(data);
+        status.textContent = '✅ Published and live!';
+      }
+      setTimeout(() => { window.location.href = 'posts.html'; }, 1200);
+    } catch (err) {
+      console.error(err);
+      status.textContent = '⚠️ Error: ' + err.message;
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Try Again';
+    }
+  });
+
+  document.getElementById('discard-btn').addEventListener('click', () => {
+    if (confirm('Discard changes and go back to posts list?')) window.location.href = 'posts.html';
+  });
+</script>
+</body>
+</html>

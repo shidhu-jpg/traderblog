@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Messages | Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="admin.css" />
+  <style>
+    .msg-card{background:var(--dark-3);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1rem}
+    .msg-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem;gap:1rem}
+    .msg-head h4{color:white;font-size:.95rem}
+    .msg-meta{font-size:.78rem;color:var(--gray)}
+    .msg-body{font-size:.9rem;color:var(--gray-light);line-height:1.65;white-space:pre-wrap}
+    .msg-actions{display:flex;gap:.5rem;margin-top:1rem;flex-wrap:wrap}
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo"><div class="logo-icon">MH</div><div class="logo-text"><strong>MNH Blog</strong><span>Admin Panel</span></div></div>
+  <nav class="sidebar-nav">
+    <a href="dashboard.html"   class="nav-item"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+    <a href="new-post.html"    class="nav-item"><i class="fa-solid fa-pen-to-square"></i> New Post</a>
+    <a href="posts.html"       class="nav-item"><i class="fa-solid fa-list"></i> All Posts</a>
+    <a href="subscribers.html" class="nav-item"><i class="fa-solid fa-users"></i> Subscribers</a>
+    <a href="messages.html"    class="nav-item active"><i class="fa-solid fa-envelope"></i> Messages</a>
+    <a href="setup.html"       class="nav-item"><i class="fa-solid fa-gear"></i> Setup Guide</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="../index.html" target="_blank" class="nav-item"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Blog</a>
+    <button class="nav-item btn-logout" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+  </div>
+</aside>
+
+<main class="main-content">
+  <header class="top-bar">
+    <div><h1>Contact Messages</h1><p class="top-sub" id="count">Loading...</p></div>
+  </header>
+
+  <div class="section-block" id="msgs-container">
+    <div style="color:var(--gray);text-align:center;padding:3rem">Loading messages from database...</div>
+  </div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/db.js"></script>
+<script>
+  let msgs = [];
+  const fmt = iso => new Date(iso).toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
+
+  dbOnAuthChange(async user => {
+    if (!user) { window.location.href = 'index.html'; return; }
+    msgs = await dbGetMessages();
+    render();
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    await dbSignOut(); window.location.href = 'index.html';
+  });
+
+  function render() {
+    document.getElementById('count').textContent = `${msgs.length} message${msgs.length !== 1 ? 's' : ''} · stored in Firebase`;
+    document.getElementById('msgs-container').innerHTML = msgs.length
+      ? msgs.map(m => `
+          <div class="msg-card">
+            <div class="msg-head">
+              <div>
+                <h4>${m.firstName || ''} ${m.lastName || ''}</h4>
+                <div class="msg-meta">
+                  <i class="fa-solid fa-envelope"></i> ${m.email}
+                  &nbsp;·&nbsp; ${m.subject || 'General'}
+                </div>
+              </div>
+              <div class="msg-meta" style="white-space:nowrap">${fmt(m.date)}</div>
+            </div>
+            <div class="msg-body">${m.message || ''}</div>
+            <div class="msg-actions">
+              <a href="mailto:${m.email}?subject=Re: ${encodeURIComponent(m.subject || 'Your message')}&body=${encodeURIComponent('Hi ' + (m.firstName || '') + ',\n\n')}" class="action-btn view-btn">
+                <i class="fa-solid fa-reply"></i> Reply via Email
+              </a>
+              <a href="https://wa.me/91${(m.phone || '').replace(/\D/g, '')}" target="_blank" class="action-btn" style="background:rgba(37,211,102,.15);color:#25D366">
+                <i class="fa-brands fa-whatsapp"></i> WhatsApp
+              </a>
+              <button class="action-btn del-btn" onclick="del('${m.id}')">
+                <i class="fa-solid fa-trash"></i> Delete
+              </button>
+            </div>
+          </div>`).join('')
+      : '<p style="color:var(--gray);text-align:center;padding:3rem">No messages yet.</p>';
+  }
+
+  async function del(id) {
+    if (!confirm('Delete this message permanently?')) return;
+    await dbDeleteMessage(id);
+    msgs = msgs.filter(m => m.id !== id);
+    render();
+  }
+</script>
+</body>
+</html>

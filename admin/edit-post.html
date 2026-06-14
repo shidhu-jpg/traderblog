@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="refresh" content="0; url=new-post.html" />
+  <script>
+    // Pass the id param through to new-post.html
+    const id = new URLSearchParams(location.search).get('id');
+    if (id) window.location.href = `new-post.html?id=${id}`;
+    else window.location.href = 'new-post.html';
+  </script>
+</head>
+<body></body>
+</html>

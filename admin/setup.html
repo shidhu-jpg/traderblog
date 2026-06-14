@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setup Guide | Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="admin.css" />
+  <style>
+    .step { background:var(--dark-2); border:1px solid var(--border); border-radius:12px; padding:1.75rem 2rem; margin-bottom:1.25rem; position:relative; }
+    .step-num { position:absolute; top:-14px; left:1.5rem; background:var(--yellow); color:#1A1200; font-weight:800; font-size:.8rem; padding:.25rem .75rem; border-radius:50px; letter-spacing:.04em; }
+    .step h3 { font-size:1.1rem; color:white; margin-bottom:.6rem; margin-top:.25rem; }
+    .step p  { font-size:.875rem; color:var(--gray-light); line-height:1.7; margin-bottom:.75rem; }
+    .step p:last-child { margin-bottom:0; }
+    code { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); border-radius:6px; padding:.15rem .5rem; font-size:.82rem; color:#F5C518; font-family:monospace; }
+    pre { background:var(--dark-4); border:1px solid var(--border); border-radius:10px; padding:1.25rem; overflow-x:auto; font-size:.82rem; color:#E8EAED; line-height:1.6; margin:.75rem 0; position:relative; }
+    .copy-btn { position:absolute; top:.75rem; right:.75rem; background:rgba(255,255,255,.1); border:none; color:var(--gray-light); border-radius:6px; padding:.3rem .75rem; font-size:.75rem; cursor:pointer; font-family:'Inter',sans-serif; transition:.2s; }
+    .copy-btn:hover { background:rgba(255,255,255,.18); color:white; }
+    .alert-green { background:rgba(46,125,50,.1); border:1px solid rgba(46,125,50,.25); border-radius:10px; padding:1rem 1.25rem; font-size:.85rem; color:#81C784; margin-bottom:1rem; }
+    .alert-yellow { background:rgba(245,197,24,.08); border:1px solid rgba(245,197,24,.2); border-radius:10px; padding:1rem 1.25rem; font-size:.85rem; color:rgba(245,197,24,.9); margin-bottom:1rem; }
+    .link-btn { display:inline-flex; align-items:center; gap:.4rem; padding:.55rem 1.1rem; background:var(--yellow); color:#1A1200; border-radius:8px; font-size:.85rem; font-weight:700; text-decoration:none; transition:.18s; }
+    .link-btn:hover { opacity:.88; }
+    .check-list li { display:flex; align-items:flex-start; gap:.65rem; font-size:.875rem; color:var(--gray-light); padding:.4rem 0; }
+    .check-list li::before { content:'✅'; flex-shrink:0; margin-top:1px; }
+    ol.steps { padding-left:1.25rem; }
+    ol.steps li { font-size:.875rem; color:var(--gray-light); line-height:1.7; margin-bottom:.4rem; }
+    .divider { border:none; border-top:1px solid var(--border); margin:2rem 0; }
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo"><div class="logo-icon">MH</div><div class="logo-text"><strong>MNH Blog</strong><span>Admin Panel</span></div></div>
+  <nav class="sidebar-nav">
+    <a href="dashboard.html"   class="nav-item"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+    <a href="new-post.html"    class="nav-item"><i class="fa-solid fa-pen-to-square"></i> New Post</a>
+    <a href="posts.html"       class="nav-item"><i class="fa-solid fa-list"></i> All Posts</a>
+    <a href="subscribers.html" class="nav-item"><i class="fa-solid fa-users"></i> Subscribers</a>
+    <a href="messages.html"    class="nav-item"><i class="fa-solid fa-envelope"></i> Messages</a>
+    <a href="setup.html"       class="nav-item active"><i class="fa-solid fa-gear"></i> Setup Guide</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="../index.html" target="_blank" class="nav-item"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Blog</a>
+    <a href="index.html" class="nav-item"><i class="fa-solid fa-right-from-bracket"></i> Login</a>
+  </div>
+</aside>
+
+<main class="main-content">
+  <header class="top-bar">
+    <div>
+      <h1>Firebase Setup Guide</h1>
+      <p class="top-sub">One-time setup. Takes about 10 minutes. Do this before going live.</p>
+    </div>
+    <a href="https://console.firebase.google.com" target="_blank" rel="noopener" class="link-btn">
+      <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Firebase Console
+    </a>
+  </header>
+
+  <div style="padding:0 2rem 3rem">
+
+    <div class="alert-yellow">
+      <strong>⚠️ Important:</strong> Until you complete this setup, the blog's admin panel and public posts will not work online. This is a one-time 10-minute task.
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="step">
+      <span class="step-num">STEP 1</span>
+      <h3>Create a Firebase Project</h3>
+      <p>Firebase is Google's free cloud database. It stores all your blog posts, subscribers, and messages online so everyone can see them.</p>
+      <ol class="steps">
+        <li>Go to <a href="https://console.firebase.google.com" target="_blank" rel="noopener" style="color:var(--yellow)">console.firebase.google.com</a> and sign in with a Google account.</li>
+        <li>Click <strong>"Add project"</strong> → name it <code>mnh-blog</code> (or anything you like).</li>
+        <li>Disable Google Analytics for now (you can add it later) → Click <strong>"Create project"</strong>.</li>
+        <li>Wait ~30 seconds for Firebase to set up your project.</li>
+      </ol>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step">
+      <span class="step-num">STEP 2</span>
+      <h3>Enable Firestore Database</h3>
+      <p>Firestore is the cloud database where posts, subscribers and messages are stored.</p>
+      <ol class="steps">
+        <li>In your Firebase project, click <strong>"Firestore Database"</strong> in the left sidebar.</li>
+        <li>Click <strong>"Create database"</strong>.</li>
+        <li>Choose <strong>"Start in test mode"</strong> (we will add security rules in Step 5).</li>
+        <li>Select a region close to India (e.g., <code>asia-south1</code> — Mumbai) → Click <strong>"Enable"</strong>.</li>
+      </ol>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step">
+      <span class="step-num">STEP 3</span>
+      <h3>Enable Email/Password Authentication</h3>
+      <p>This lets you log in to the admin panel securely. Only you know the password — it is never stored in the code.</p>
+      <ol class="steps">
+        <li>Click <strong>"Authentication"</strong> in the left sidebar → <strong>"Get started"</strong>.</li>
+        <li>Under <em>Sign-in providers</em>, click <strong>"Email/Password"</strong> → Enable the first toggle → <strong>"Save"</strong>.</li>
+        <li>Click the <strong>"Users"</strong> tab → <strong>"Add user"</strong>.</li>
+        <li>Enter your email address and a strong password → <strong>"Add user"</strong>.</li>
+        <li><em>This email and password is what you use to log in to the admin panel.</em></li>
+      </ol>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step">
+      <span class="step-num">STEP 4</span>
+      <h3>Copy Your Firebase Config into <code>js/config.js</code></h3>
+      <p>This links your website to your Firebase project.</p>
+      <ol class="steps">
+        <li>Click the <strong>gear icon ⚙️</strong> next to "Project Overview" → <strong>"Project settings"</strong>.</li>
+        <li>Scroll down to <strong>"Your apps"</strong> → Click the web icon <code>&lt;/&gt;</code> → Register app (name: <code>mnh-blog</code>).</li>
+        <li>You will see a <code>firebaseConfig</code> object. Copy the values from it.</li>
+        <li>Open the file <strong><code>js/config.js</code></strong> in your code editor and paste the values replacing the placeholder text.</li>
+      </ol>
+      <p>The file should look like this after you fill it in:</p>
+      <pre id="config-example">const firebaseConfig = {
+  apiKey:            "AIzaSy...",
+  authDomain:        "mnh-blog.firebaseapp.com",
+  projectId:         "mnh-blog",
+  storageBucket:     "mnh-blog.appspot.com",
+  messagingSenderId: "1234567890",
+  appId:             "1:1234567890:web:abc123"
+};</pre>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step">
+      <span class="step-num">STEP 5</span>
+      <h3>Set Firestore Security Rules</h3>
+      <p>These rules make sure:</p>
+      <ul class="check-list">
+        <li>Anyone can read your blog posts (required for visitors to see them)</li>
+        <li>Only you (logged-in admin) can create, edit, or delete posts</li>
+        <li>Anyone can submit a newsletter signup or contact message</li>
+        <li>Only you can read subscriber emails and contact messages</li>
+      </ul>
+      <p style="margin-top:.75rem">In Firebase Console → <strong>Firestore Database</strong> → <strong>Rules</strong> tab, replace the existing rules with this:</p>
+      <div style="position:relative">
+        <pre id="rules-code">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Blog posts: public read, admin write
+    match /posts/{postId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+
+    // Newsletter subscribers: public create, admin read/delete
+    match /subscribers/{subId} {
+      allow create: if true;
+      allow read, delete: if request.auth != null;
+    }
+
+    // Contact messages: public create, admin read/delete
+    match /messages/{msgId} {
+      allow create: if true;
+      allow read, delete: if request.auth != null;
+    }
+  }
+}</pre>
+        <button class="copy-btn" onclick="copyRules()">Copy</button>
+      </div>
+      <p>Click <strong>"Publish"</strong> to save the rules.</p>
+    </div>
+
+    <!-- STEP 6 -->
+    <div class="step">
+      <span class="step-num">STEP 6</span>
+      <h3>Deploy Your Website</h3>
+      <p>Upload all the website files to any static hosting provider. Recommended free options:</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:.75rem 0">
+        <div style="background:var(--dark-3);border-radius:10px;padding:1rem;text-align:center">
+          <div style="font-size:1.5rem;margin-bottom:.4rem">▲</div>
+          <strong style="font-size:.9rem">Netlify</strong>
+          <p style="font-size:.78rem;color:var(--gray);margin:.3rem 0 0">Drag &amp; drop the folder at netlify.com</p>
+        </div>
+        <div style="background:var(--dark-3);border-radius:10px;padding:1rem;text-align:center">
+          <div style="font-size:1.5rem;margin-bottom:.4rem">🐙</div>
+          <strong style="font-size:.9rem">GitHub Pages</strong>
+          <p style="font-size:.78rem;color:var(--gray);margin:.3rem 0 0">Push to GitHub, enable Pages in settings</p>
+        </div>
+        <div style="background:var(--dark-3);border-radius:10px;padding:1rem;text-align:center">
+          <div style="font-size:1.5rem;margin-bottom:.4rem">☁️</div>
+          <strong style="font-size:.9rem">Cloudflare Pages</strong>
+          <p style="font-size:.78rem;color:var(--gray);margin:.3rem 0 0">Free CDN, fast globally, easy setup</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 7 -->
+    <div class="step">
+      <span class="step-num">STEP 7</span>
+      <h3>Add Authorized Domains (Important)</h3>
+      <p>Firebase needs to know which domains are allowed to use your database. Without this, login will fail on your live domain.</p>
+      <ol class="steps">
+        <li>Firebase Console → <strong>Authentication</strong> → <strong>Settings</strong> tab → <strong>Authorized domains</strong>.</li>
+        <li>Click <strong>"Add domain"</strong> and add your live website domain (e.g., <code>manjunathswamynh.com</code> or your Netlify URL like <code>yoursite.netlify.app</code>).</li>
+        <li><code>localhost</code> is already there for local testing.</li>
+      </ol>
+    </div>
+
+    <!-- STEP 8 -->
+    <div class="step">
+      <span class="step-num">STEP 8</span>
+      <h3>Seed Your First Posts</h3>
+      <p>After logging into the admin panel on your live site, the Dashboard will show a <strong>"Seed Sample Posts"</strong> button if your blog is empty. Click it to load 9 sample articles across all categories — Trading, Books, Trips, and Cooking. You can edit or delete them anytime.</p>
+      <div class="alert-green">
+        ✅ Once seeded, posts are immediately live and visible to all visitors worldwide.
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- DONE -->
+    <div class="alert-green">
+      <strong>🎉 You're all set!</strong> From now on, every post you add, edit, or delete in the admin panel is immediately reflected on your live blog for all visitors. No extra steps required.
+    </div>
+
+    <h3 style="color:white;margin-bottom:1rem;font-family:'Playfair Display',serif">How to Manage Your Blog Day-to-Day</h3>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1rem">
+      <div style="background:var(--dark-2);border:1px solid var(--border);border-radius:10px;padding:1.25rem">
+        <h4 style="color:var(--yellow);margin-bottom:.5rem">➕ Add a new post</h4>
+        <p style="font-size:.85rem;color:var(--gray-light)">Admin Panel → New Post → pick category, write your article, click "Publish Live". Done — visible to everyone instantly.</p>
+      </div>
+      <div style="background:var(--dark-2);border:1px solid var(--border);border-radius:10px;padding:1.25rem">
+        <h4 style="color:#4CAF50;margin-bottom:.5rem">✏️ Edit an existing post</h4>
+        <p style="font-size:.85rem;color:var(--gray-light)">Admin Panel → All Posts → click the pen icon ✏️ next to any post → make changes → click "Update Live".</p>
+      </div>
+      <div style="background:var(--dark-2);border:1px solid var(--border);border-radius:10px;padding:1.25rem">
+        <h4 style="color:#FF6B6B;margin-bottom:.5rem">🗑️ Delete a post</h4>
+        <p style="font-size:.85rem;color:var(--gray-light)">Admin Panel → All Posts → click the trash icon 🗑️ → confirm. Post is permanently removed from your blog for all visitors.</p>
+      </div>
+      <div style="background:var(--dark-2);border:1px solid var(--border);border-radius:10px;padding:1.25rem">
+        <h4 style="color:#42A5F5;margin-bottom:.5rem">👥 View subscribers</h4>
+        <p style="font-size:.85rem;color:var(--gray-light)">Admin Panel → Subscribers. Export as CSV to send newsletters via Gmail, Mailchimp, or any email tool.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  function copyRules() {
+    navigator.clipboard.writeText(document.getElementById('rules-code').textContent.trim());
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login | ManjunathswamyNH</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --yellow:#F5C518;--green:#2E7D32;--dark:#0D0F14;--dark-2:#151820;--dark-3:#1E2130;--gray:#8892A4;--border:rgba(255,255,255,0.08); }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:var(--dark);min-height:100vh;display:flex;align-items:center;justify-content:center;color:white}
+    body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(46,125,50,.12) 0%,transparent 70%);pointer-events:none}
+    .box{background:var(--dark-2);border:1px solid var(--border);border-radius:20px;padding:3rem 2.5rem;width:100%;max-width:420px;position:relative}
+    .box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--yellow),var(--green));border-radius:20px 20px 0 0}
+    .logo{display:flex;align-items:center;gap:.75rem;margin-bottom:2rem}
+    .li{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--yellow),var(--green));display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1rem;color:var(--dark)}
+    .lt strong{display:block;font-size:1.05rem;font-family:'Playfair Display',serif}
+    .lt span{font-size:.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:.08em}
+    h2{font-size:1.6rem;font-family:'Playfair Display',serif;margin-bottom:.35rem}
+    .sub{color:var(--gray);font-size:.88rem;margin-bottom:2rem}
+    .fg{margin-bottom:1.25rem}
+    label{display:block;font-size:.82rem;font-weight:600;margin-bottom:.45rem;color:#B0BAC9}
+    input{width:100%;padding:.85rem 1.1rem;background:var(--dark-3);border:1.5px solid var(--border);border-radius:12px;color:white;font-size:.95rem;font-family:'Inter',sans-serif;outline:none;transition:.2s}
+    input:focus{border-color:var(--yellow);box-shadow:0 0 0 3px rgba(245,197,24,.1)}
+    .btn{width:100%;padding:.9rem;background:linear-gradient(135deg,var(--yellow),#E6B800);color:#1A1200;border:none;border-radius:12px;font-size:1rem;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:.2s;margin-top:.5rem}
+    .btn:hover{opacity:.9;transform:translateY(-1px)}
+    .btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .err{background:rgba(220,50,50,.12);border:1px solid rgba(220,50,50,.25);color:#FF6B6B;border-radius:10px;padding:.75rem 1rem;font-size:.85rem;margin-bottom:1.25rem;display:none}
+    .bk{display:block;text-align:center;margin-top:1.5rem;font-size:.83rem;color:var(--gray);text-decoration:none;transition:.2s}
+    .bk:hover{color:var(--yellow)}
+    .info{background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.15);border-radius:10px;padding:.85rem 1rem;font-size:.8rem;color:rgba(245,197,24,.8);margin-bottom:1.5rem;line-height:1.55}
+    .info a{color:var(--yellow);text-decoration:underline}
+  </style>
+</head>
+<body>
+<div class="box">
+  <div class="logo">
+    <div class="li">MH</div>
+    <div class="lt"><strong>ManjunathswamyNH</strong><span>Admin Panel</span></div>
+  </div>
+  <h2>Welcome back</h2>
+  <p class="sub">Sign in to manage your blog</p>
+
+  <div class="info">
+    🔐 Use the email &amp; password you created in Firebase Authentication Console.<br>
+    First time? Follow the <a href="setup.html">setup guide</a> first.
+  </div>
+
+  <div class="err" id="err">Incorrect email or password. Please try again.</div>
+
+  <form id="form">
+    <div class="fg"><label>Email Address</label><input type="email" id="email" placeholder="admin@example.com" autocomplete="username" required /></div>
+    <div class="fg"><label>Password</label><input type="password" id="pass" placeholder="Your password" autocomplete="current-password" required /></div>
+    <button type="submit" class="btn" id="btn">Sign In →</button>
+  </form>
+
+  <a href="../index.html" class="bk">← Back to Blog</a>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/db.js"></script>
+<script>
+  // If already signed in, go to dashboard
+  dbOnAuthChange(user => {
+    if (user) window.location.href = 'dashboard.html';
+  });
+
+  document.getElementById('form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn  = document.getElementById('btn');
+    const errEl = document.getElementById('err');
+    errEl.style.display = 'none';
+    btn.textContent = 'Signing in...';
+    btn.disabled = true;
+
+    try {
+      await dbSignIn(
+        document.getElementById('email').value.trim(),
+        document.getElementById('pass').value
+      );
+      window.location.href = 'dashboard.html';
+    } catch (err) {
+      errEl.style.display = 'block';
+      errEl.textContent   = err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found'
+        ? 'Incorrect email or password. Please try again.'
+        : err.message;
+      btn.textContent = 'Sign In →';
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

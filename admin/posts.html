@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Posts | Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo"><div class="logo-icon">MH</div><div class="logo-text"><strong>MNH Blog</strong><span>Admin Panel</span></div></div>
+  <nav class="sidebar-nav">
+    <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+    <a href="new-post.html"  class="nav-item"><i class="fa-solid fa-pen-to-square"></i> New Post</a>
+    <a href="posts.html"     class="nav-item active"><i class="fa-solid fa-list"></i> All Posts</a>
+    <a href="subscribers.html" class="nav-item"><i class="fa-solid fa-users"></i> Subscribers</a>
+    <a href="messages.html"  class="nav-item"><i class="fa-solid fa-envelope"></i> Messages</a>
+    <a href="setup.html"     class="nav-item"><i class="fa-solid fa-gear"></i> Setup Guide</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="../index.html" target="_blank" class="nav-item"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Blog</a>
+    <button class="nav-item btn-logout" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+  </div>
+</aside>
+
+<main class="main-content">
+  <header class="top-bar">
+    <div>
+      <h1>All Posts</h1>
+      <p class="top-sub" id="post-count">Loading...</p>
+    </div>
+    <div style="display:flex;gap:.75rem;align-items:center">
+      <select id="filter-cat" style="padding:.6rem 1rem;background:var(--dark-3);border:1px solid var(--border);color:white;border-radius:8px;font-size:.88rem;outline:none">
+        <option value="all">All Categories</option>
+        <option value="trading">📈 Trading</option>
+        <option value="books">📚 Books</option>
+        <option value="trips">🌍 Trips</option>
+        <option value="cooking">🍳 Cooking</option>
+        <option value="spirituality">🕉️ Spirituality</option>
+      </select>
+      <a href="new-post.html" class="btn-create"><i class="fa-solid fa-plus"></i> New Post</a>
+    </div>
+  </header>
+
+  <div class="section-block">
+    <div class="table-wrap">
+      <table class="posts-table">
+        <thead>
+          <tr><th>Emoji</th><th>Title</th><th>Category</th><th>Date</th><th>Featured</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="posts-tbody">
+          <tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--gray)">Loading posts from database...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/db.js"></script>
+<script>
+  const catLabel = cat => ({ trading:'📈 Trading', books:'📚 Books', trips:'🌍 Trips', cooking:'🍳 Cooking' }[cat] || cat);
+  const fmt = iso => new Date(iso).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+  let allPosts = [];
+
+  dbOnAuthChange(async user => {
+    if (!user) { window.location.href = 'index.html'; return; }
+    allPosts = await dbGetPosts();
+    render('all');
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    await dbSignOut(); window.location.href = 'index.html';
+  });
+
+  document.getElementById('filter-cat').addEventListener('change', e => render(e.target.value));
+
+  function render(filter = 'all') {
+    const posts = filter === 'all' ? allPosts : allPosts.filter(p => p.category === filter);
+    document.getElementById('post-count').textContent = `${posts.length} article${posts.length !== 1 ? 's' : ''} · changes go live instantly`;
+
+    document.getElementById('posts-tbody').innerHTML = posts.length
+      ? posts.map(p => `
+          <tr>
+            <td style="text-align:center;font-size:1.5rem">${p.emoji || '📝'}</td>
+            <td class="post-title-cell">${p.title}</td>
+            <td>${catLabel(p.category)}</td>
+            <td>${fmt(p.date)}</td>
+            <td style="text-align:center">${p.featured ? '⭐' : '—'}</td>
+            <td>
+              <div class="action-btns">
+                <a href="../post.html?id=${p.id}" target="_blank" class="action-btn view-btn" title="View on blog"><i class="fa-solid fa-eye"></i></a>
+                <a href="new-post.html?id=${p.id}" class="action-btn edit-btn" title="Edit"><i class="fa-solid fa-pen"></i></a>
+                <button class="action-btn del-btn" onclick="del('${p.id}')" title="Delete permanently"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </td>
+          </tr>`).join('')
+      : '<tr><td colspan="6" style="text-align:center;color:var(--gray);padding:3rem">No posts found. <a href="new-post.html" style="color:var(--yellow)">Write your first post →</a></td></tr>';
+  }
+
+  async function del(id) {
+    if (!confirm('Delete this post permanently?\n\nThis will immediately remove it from your live blog for all visitors. This cannot be undone.')) return;
+    await dbDeletePost(id);
+    allPosts = allPosts.filter(p => p.id !== id);
+    render(document.getElementById('filter-cat').value);
+    showToast('Post deleted.');
+  }
+
+  function showToast(msg) {
+    const t = document.createElement('div');
+    t.textContent = msg;
+    Object.assign(t.style, { position:'fixed', bottom:'2rem', right:'2rem', background:'#252A3A', color:'white', padding:'.75rem 1.5rem', borderRadius:'10px', fontSize:'.88rem', fontWeight:'600', boxShadow:'0 4px 20px rgba(0,0,0,.3)', zIndex:'9999', borderLeft:'3px solid #F5C518', fontFamily:'Inter,sans-serif' });
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  }
+</script>
+</body>
+</html>
