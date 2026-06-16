@@ -201,3 +201,16 @@ function dbOnAuthChange(callback) {
 function dbCurrentUser() {
   return _auth().currentUser;
 }
+
+// ── SITE SETTINGS ─────────────────────────────────────
+
+/** Get site settings object (social links, bio, etc.) */
+async function dbGetSettings() {
+  const doc = await _db().collection('site_settings').doc('main').get();
+  return doc.exists ? doc.data() : {};
+}
+
+/** Save (merge) site settings. */
+async function dbSaveSettings(data) {
+  await _db().collection('site_settings').doc('main').set(data, { merge: true });
+}
