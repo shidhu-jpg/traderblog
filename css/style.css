@@ -152,6 +152,8 @@ p  { font-size: 1rem; }
 .tag-trips   { background: rgba(30,130,200,0.12); color: #1E82C8; }
 .tag-cooking      { background: rgba(220,80,50,0.12);  color: #DC5032; }
 .tag-spirituality { background: rgba(140,80,220,0.13); color: #9B59B6; }
+.tag-movies       { background: rgba(79,70,229,0.12);  color: #4F46E5; }
+.tag-kdrama       { background: rgba(236,72,153,0.12); color: #DB2777; }
 .tag-dark         { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); }
 
 /* ─── NAVBAR ─────────────────────────────────── */
@@ -565,6 +567,10 @@ p  { font-size: 1rem; }
 .cat-cooking .cat-icon { background: rgba(191,54,12,0.1); }
 .cat-spirituality  { background: #F9F5FF; color: #6B21A8; border: 1.5px solid #DDD6FE; }
 .cat-spirituality .cat-icon { background: rgba(107,33,168,0.1); }
+.cat-movies        { background: #EEF2FF; color: #3730A3; border: 1.5px solid #C7D2FE; }
+.cat-movies .cat-icon { background: rgba(79,70,229,0.1); }
+.cat-kdrama        { background: #FFF1F2; color: #9F1239; border: 1.5px solid #FECDD3; }
+.cat-kdrama .cat-icon { background: rgba(236,72,153,0.1); }
 
 /* ─── BLOG CARDS ─────────────────────────────── */
 .blog-card {

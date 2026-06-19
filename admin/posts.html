@@ -42,6 +42,8 @@
         <option value="trips">🌍 Trips</option>
         <option value="cooking">🍳 Cooking</option>
         <option value="spirituality">🕉️ Spirituality</option>
+        <option value="movies">🎬 Movies</option>
+        <option value="kdrama">🎭 K-Drama</option>
       </select>
       <a href="new-post.html" class="btn-create"><i class="fa-solid fa-plus"></i> New Post</a>
     </div>
@@ -67,7 +69,7 @@
 <script src="../js/config.js"></script>
 <script src="../js/db.js"></script>
 <script>
-  const catLabel = cat => ({ trading:'📈 Trading', books:'📚 Books', trips:'🌍 Trips', cooking:'🍳 Cooking' }[cat] || cat);
+  const catLabel = cat => ({ trading:'📈 Trading', books:'📚 Books', trips:'🌍 Trips', cooking:'🍳 Cooking', spirituality:'🕉️ Spirituality', movies:'🎬 Movies', kdrama:'🎭 K-Drama' }[cat] || cat);
   const fmt = iso => new Date(iso).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
   let allPosts = [];
 

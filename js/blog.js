@@ -7,10 +7,10 @@
 // ── HELPERS ───────────────────────────────────────────
 
 function getCategoryClass(cat) {
-  return { trading:'tag-trading', books:'tag-books', trips:'tag-trips', cooking:'tag-cooking' }[cat] || 'tag-books';
+  return { trading:'tag-trading', books:'tag-books', trips:'tag-trips', cooking:'tag-cooking', spirituality:'tag-spirituality', movies:'tag-movies', kdrama:'tag-kdrama' }[cat] || 'tag-books';
 }
 function getCategoryLabel(cat) {
-  return { trading:'📈 Trading', books:'📚 Book Reviews', trips:'🌍 Trips', cooking:'🍳 Cooking' }[cat] || cat;
+  return { trading:'📈 Trading', books:'📚 Book Reviews', trips:'🌍 Trips', cooking:'🍳 Cooking', spirituality:'🕉️ Spirituality', movies:'🎬 Movies', kdrama:'🎭 K-Drama' }[cat] || cat;
 }
 function formatDate(iso) {
   if (!iso) return '';
@@ -216,7 +216,7 @@ async function renderPost() {
 async function renderCategoryCounts() {
   try {
     const posts = await dbGetPosts();
-    const counts = { trading: 0, books: 0, trips: 0, cooking: 0, spirituality: 0 };
+    const counts = { trading: 0, books: 0, trips: 0, cooking: 0, spirituality: 0, movies: 0, kdrama: 0 };
     posts.forEach(p => { if (counts[p.category] !== undefined) counts[p.category]++; });
     Object.entries(counts).forEach(([cat, n]) => {
       const el = document.getElementById(`count-${cat}`);

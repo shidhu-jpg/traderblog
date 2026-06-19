@@ -66,7 +66,9 @@
       <a href="new-post.html?cat=trading" class="quick-card qc-trading"><span class="qc-icon">📈</span><strong>New Trading Post</strong><span>Options, equities, analysis</span></a>
       <a href="new-post.html?cat=books"   class="quick-card qc-books"><span class="qc-icon">📚</span><strong>New Book Review</strong><span>Share what you're reading</span></a>
       <a href="new-post.html?cat=trips"   class="quick-card qc-trips"><span class="qc-icon">🌍</span><strong>New Trip Story</strong><span>Document your travels</span></a>
-      <a href="new-post.html?cat=cooking" class="quick-card qc-cooking"><span class="qc-icon">🍳</span><strong>New Recipe</strong><span>Share a cooking experiment</span></a>
+      <a href="new-post.html?cat=cooking"      class="quick-card qc-cooking"><span class="qc-icon">🍳</span><strong>New Recipe</strong><span>Share a cooking experiment</span></a>
+      <a href="new-post.html?cat=movies"       class="quick-card" style="background:rgba(79,70,229,0.08);border:1px solid rgba(79,70,229,0.2)"><span class="qc-icon">🎬</span><strong>New Movie Review</strong><span>Films worth reviewing</span></a>
+      <a href="new-post.html?cat=kdrama"       class="quick-card" style="background:rgba(236,72,153,0.08);border:1px solid rgba(236,72,153,0.2)"><span class="qc-icon">🎭</span><strong>New K-Drama Review</strong><span>Korean drama picks</span></a>
     </div>
   </div>
 
@@ -103,7 +105,7 @@
 <script src="../js/config.js"></script>
 <script src="../js/db.js"></script>
 <script>
-  const catLabel = cat => ({ trading:'📈 Trading', books:'📚 Books', trips:'🌍 Trips', cooking:'🍳 Cooking' }[cat] || cat);
+  const catLabel = cat => ({ trading:'📈 Trading', books:'📚 Books', trips:'🌍 Trips', cooking:'🍳 Cooking', spirituality:'🕉️ Spirituality', movies:'🎬 Movies', kdrama:'🎭 K-Drama' }[cat] || cat);
   const fmt = iso => new Date(iso).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
 
   // Auth guard — redirect to login if not signed in
