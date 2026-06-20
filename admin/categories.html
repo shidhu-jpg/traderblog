@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Categories | Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="admin.css" />
+  <style>
+    .cat-preview {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .35rem .9rem; border-radius: 50px;
+      font-size: .82rem; font-weight: 600;
+    }
+    .slug-hint { font-size: .75rem; color: var(--gray); margin-top: .25rem; font-family: monospace; }
+    .cat-row { display: flex; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+    .cat-row:last-child { border-bottom: none; }
+    .cat-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+    .cat-info { flex: 1; }
+    .cat-info strong { display: block; font-size: .95rem; }
+    .cat-info small { color: var(--gray); font-size: .78rem; }
+    .empty-cats { color: var(--gray); text-align: center; padding: 2.5rem; font-size: .9rem; }
+    .color-row { display: flex; gap: .75rem; align-items: center; }
+    .color-swatches { display: flex; gap: .4rem; flex-wrap: wrap; }
+    .swatch { width: 26px; height: 26px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: .15s; }
+    .swatch:hover, .swatch.selected { border-color: white; transform: scale(1.15); }
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">MH</div>
+    <div class="logo-text"><strong>MNH Blog</strong><span>Admin Panel</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="dashboard.html"   class="nav-item"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+    <a href="new-post.html"    class="nav-item"><i class="fa-solid fa-pen-to-square"></i> New Post</a>
+    <a href="posts.html"       class="nav-item"><i class="fa-solid fa-list"></i> All Posts</a>
+    <a href="categories.html"  class="nav-item active"><i class="fa-solid fa-tags"></i> Categories</a>
+    <a href="subscribers.html" class="nav-item"><i class="fa-solid fa-users"></i> Subscribers</a>
+    <a href="messages.html"    class="nav-item"><i class="fa-solid fa-envelope"></i> Messages</a>
+    <a href="setup.html"       class="nav-item"><i class="fa-solid fa-gear"></i> Setup Guide</a>
+    <a href="settings.html"    class="nav-item"><i class="fa-solid fa-sliders"></i> Site Settings</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="../index.html" target="_blank" class="nav-item"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Blog</a>
+    <button class="nav-item btn-logout" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+  </div>
+</aside>
+
+<main class="main-content">
+  <header class="top-bar">
+    <div>
+      <h1>Categories</h1>
+      <p class="top-sub">Add custom categories — they appear in the nav, homepage and blog automatically</p>
+    </div>
+  </header>
+
+  <div style="display:grid;grid-template-columns:1fr 380px;gap:2rem;padding:0 2rem 4rem;align-items:start">
+
+    <!-- EXISTING CATEGORIES -->
+    <div>
+      <div class="section-block">
+        <h3 style="margin-bottom:1.25rem">Your Custom Categories</h3>
+        <div id="cats-list"><div class="empty-cats">Loading...</div></div>
+      </div>
+
+      <div class="section-block" style="margin-top:1.5rem">
+        <h3 style="margin-bottom:.75rem">Built-in Categories</h3>
+        <p style="color:var(--gray);font-size:.85rem;margin-bottom:1.25rem">These are always on the site and cannot be removed here.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem">
+          <span class="cat-preview" style="background:rgba(245,197,24,0.15);color:#F5C518">📈 Trading</span>
+          <span class="cat-preview" style="background:rgba(46,125,50,0.12);color:#4CAF50">📚 Books</span>
+          <span class="cat-preview" style="background:rgba(30,130,200,0.12);color:#42A5F5">🌍 Trips</span>
+          <span class="cat-preview" style="background:rgba(220,80,50,0.12);color:#EF6C00">🍳 Cooking</span>
+          <span class="cat-preview" style="background:rgba(140,80,220,0.13);color:#AB47BC">🕉️ Spirituality</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD CATEGORY FORM -->
+    <div class="section-block" style="position:sticky;top:1.5rem">
+      <h3 style="margin-bottom:1.5rem">Add New Category</h3>
+
+      <div class="form-group">
+        <label>Category Name <span class="req">*</span></label>
+        <input type="text" id="cat-name" placeholder="e.g. Movies" maxlength="30" />
+      </div>
+
+      <div class="form-group">
+        <label>Emoji Icon <span class="req">*</span></label>
+        <input type="text" id="cat-emoji" placeholder="e.g. 🎬" maxlength="4" />
+        <span class="field-hint">One emoji — shown in the nav and on cards.</span>
+      </div>
+
+      <div class="form-group">
+        <label>URL Slug <span class="req">*</span></label>
+        <input type="text" id="cat-slug" placeholder="e.g. movies" maxlength="30" />
+        <div class="slug-hint" id="slug-preview">category.html?cat=</div>
+        <span class="field-hint">Lowercase letters and hyphens only. Posts saved under this slug appear on this page.</span>
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="cat-desc" rows="2" placeholder="Short description shown on the category card..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Accent Color</label>
+        <div class="color-row">
+          <input type="color" id="cat-color" value="#4F46E5" style="width:40px;height:40px;border:none;border-radius:8px;cursor:pointer;background:none;padding:0" />
+          <div class="color-swatches" id="swatches"></div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Display Order</label>
+        <input type="number" id="cat-order" value="10" min="1" max="99" style="width:80px" />
+        <span class="field-hint">Lower number = appears first in nav.</span>
+      </div>
+
+      <div style="display:flex;gap:.75rem;align-items:center;margin-top:.5rem">
+        <span id="form-status" style="font-size:.82rem;color:var(--gray)"></span>
+        <button class="btn-create" id="add-btn" style="margin-left:auto"><i class="fa-solid fa-plus"></i> Add Category</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="../js/config.js"></script>
+<script src="../js/db.js"></script>
+<script>
+  const PRESETS = ['#4F46E5','#DB2777','#D97706','#059669','#DC2626','#7C3AED','#0891B2','#65A30D'];
+
+  dbOnAuthChange(async user => {
+    if (!user) { window.location.href = 'index.html'; return; }
+    buildSwatches();
+    await loadCats();
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    await dbSignOut(); window.location.href = 'index.html';
+  });
+
+  // Auto-generate slug from name
+  document.getElementById('cat-name').addEventListener('input', () => {
+    const name = document.getElementById('cat-name').value;
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    document.getElementById('cat-slug').value = slug;
+    document.getElementById('slug-preview').textContent = 'category.html?cat=' + slug;
+  });
+
+  document.getElementById('cat-slug').addEventListener('input', () => {
+    const slug = document.getElementById('cat-slug').value;
+    document.getElementById('slug-preview').textContent = 'category.html?cat=' + slug;
+  });
+
+  function buildSwatches() {
+    const container = document.getElementById('swatches');
+    const colorInput = document.getElementById('cat-color');
+    PRESETS.forEach(hex => {
+      const s = document.createElement('div');
+      s.className = 'swatch' + (hex === colorInput.value ? ' selected' : '');
+      s.style.background = hex;
+      s.title = hex;
+      s.addEventListener('click', () => {
+        colorInput.value = hex;
+        document.querySelectorAll('.swatch').forEach(x => x.classList.remove('selected'));
+        s.classList.add('selected');
+      });
+      container.appendChild(s);
+    });
+    colorInput.addEventListener('input', () => {
+      document.querySelectorAll('.swatch').forEach(x => x.classList.remove('selected'));
+    });
+  }
+
+  async function loadCats() {
+    const list = document.getElementById('cats-list');
+    const cats = await dbGetCategories();
+    if (!cats.length) {
+      list.innerHTML = '<div class="empty-cats">No custom categories yet. Add your first one →</div>';
+      return;
+    }
+    list.innerHTML = cats.map(cat => `
+      <div class="cat-row">
+        <div class="cat-dot" style="background:${cat.color || '#888'}"></div>
+        <div class="cat-icon" style="font-size:1.4rem">${cat.emoji || '📁'}</div>
+        <div class="cat-info">
+          <strong>${cat.name}</strong>
+          <small>slug: <code style="background:rgba(255,255,255,.07);padding:.1rem .4rem;border-radius:4px;font-size:.75rem">${cat.slug}</code> · ${cat.description || 'No description'}</small>
+        </div>
+        <a href="../category.html?cat=${cat.slug}" target="_blank" class="action-btn view-btn" title="View page"><i class="fa-solid fa-eye"></i></a>
+        <button class="action-btn del-btn" onclick="delCat('${cat.id}','${cat.name}')" title="Delete"><i class="fa-solid fa-trash"></i></button>
+      </div>`).join('');
+  }
+
+  document.getElementById('add-btn').addEventListener('click', async () => {
+    const name  = document.getElementById('cat-name').value.trim();
+    const emoji = document.getElementById('cat-emoji').value.trim();
+    const slug  = document.getElementById('cat-slug').value.trim().toLowerCase().replace(/[^a-z0-9-]/g,'');
+    const desc  = document.getElementById('cat-desc').value.trim();
+    const color = document.getElementById('cat-color').value;
+    const order = parseInt(document.getElementById('cat-order').value) || 10;
+    const status = document.getElementById('form-status');
+
+    if (!name || !slug) { status.textContent = '⚠️ Name and slug are required.'; return; }
+    if (!/^[a-z0-9-]+$/.test(slug)) { status.textContent = '⚠️ Slug must be lowercase letters, numbers and hyphens only.'; return; }
+
+    const btn = document.getElementById('add-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Adding...';
+    status.textContent = '';
+
+    try {
+      await dbCreateCategory({ name, emoji, slug, description: desc, color, order });
+      // Reset form
+      ['cat-name','cat-emoji','cat-slug','cat-desc'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('cat-order').value = '10';
+      document.getElementById('slug-preview').textContent = 'category.html?cat=';
+      status.textContent = '✅ Category added! It will appear on the site automatically.';
+      await loadCats();
+    } catch (err) {
+      status.textContent = '⚠️ Error: ' + err.message;
+    }
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Category';
+  });
+
+  async function delCat(id, name) {
+    if (!confirm(`Delete the "${name}" category?\n\nExisting posts with this category slug will still exist — they just won't appear on the category page until you recreate it.`)) return;
+    await dbDeleteCategory(id);
+    await loadCats();
+  }
+</script>
+</body>
+</html>

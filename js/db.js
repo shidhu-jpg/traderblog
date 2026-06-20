@@ -214,3 +214,30 @@ async function dbGetSettings() {
 async function dbSaveSettings(data) {
   await _db().collection('site_settings').doc('main').set(data, { merge: true });
 }
+
+// ── CUSTOM CATEGORIES ─────────────────────────────────
+
+/** Get all admin-created categories, sorted by order. */
+async function dbGetCategories() {
+  try {
+    const snap = await _db().collection('categories').orderBy('order').get();
+    return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  } catch (_) {
+    const snap = await _db().collection('categories').get();
+    return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  }
+}
+
+/** Create a new category. */
+async function dbCreateCategory(data) {
+  const ref = await _db().collection('categories').add({
+    ...data,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+  });
+  return ref.id;
+}
+
+/** Delete a category by ID. */
+async function dbDeleteCategory(id) {
+  await _db().collection('categories').doc(id).delete();
+}

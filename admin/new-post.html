@@ -38,6 +38,7 @@
     <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge"></i> Dashboard</a>
     <a href="new-post.html"  class="nav-item active"><i class="fa-solid fa-pen-to-square"></i> New Post</a>
     <a href="posts.html"     class="nav-item"><i class="fa-solid fa-list"></i> All Posts</a>
+    <a href="categories.html"  class="nav-item"><i class="fa-solid fa-tags"></i> Categories</a>
     <a href="subscribers.html" class="nav-item"><i class="fa-solid fa-users"></i> Subscribers</a>
     <a href="messages.html"  class="nav-item"><i class="fa-solid fa-envelope"></i> Messages</a>
     <a href="setup.html"     class="nav-item"><i class="fa-solid fa-gear"></i> Setup Guide</a>
@@ -97,8 +98,6 @@
             <option value="trips">🌍 Trips</option>
             <option value="cooking">🍳 Cooking</option>
             <option value="spirituality">🕉️ Spirituality</option>
-            <option value="movies">🎬 Movies</option>
-            <option value="kdrama">🎭 K-Drama</option>
           </select>
         </div>
         <div class="form-group">
@@ -179,6 +178,17 @@
 
     // Set default date
     document.getElementById('post-date').value = new Date().toISOString().split('T')[0];
+
+    // Load admin-created categories into dropdown
+    dbGetCategories().then(cats => {
+      const sel = document.getElementById('post-cat');
+      cats.forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat.slug;
+        opt.textContent = `${cat.emoji || ''} ${cat.name}`;
+        sel.appendChild(opt);
+      });
+    }).catch(() => {});
 
     // Pre-fill category from URL param
     const urlCat = new URLSearchParams(location.search).get('cat');

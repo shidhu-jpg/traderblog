@@ -225,6 +225,50 @@ async function renderCategoryCounts() {
   } catch (_) { /* counts are non-critical */ }
 }
 
+// ── DYNAMIC CATEGORY CARDS (homepage) ────────────────
+
+async function renderDynamicCategoryCards() {
+  const container = document.getElementById('dynamic-cat-cards');
+  if (!container) return;
+  try {
+    const cats = await dbGetCategories();
+    if (!cats.length) return;
+    const posts = await dbGetPosts();
+    container.innerHTML = cats.map(cat => {
+      const n = posts.filter(p => p.category === cat.slug).length;
+      return `
+      <a href="category.html?cat=${cat.slug}" class="cat-card" style="background:${cat.color}12;color:${cat.color};border:1.5px solid ${cat.color}30">
+        <div class="cat-icon" style="background:${cat.color}18">${cat.emoji || '📁'}</div>
+        <h3 style="color:inherit">${cat.name}</h3>
+        <p style="color:var(--gray)">${cat.description || ''}</p>
+        <span class="cat-count">${n} article${n !== 1 ? 's' : ''}</span>
+      </a>`;
+    }).join('');
+  } catch (_) {}
+}
+
+// ── DYNAMIC FILTER TABS (blog.html) ──────────────────
+
+async function renderDynamicFilterTabs() {
+  const container = document.querySelector('.filter-tabs');
+  if (!container) return;
+  try {
+    const cats = await dbGetCategories();
+    cats.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.className = 'filter-tab';
+      btn.dataset.cat = cat.slug;
+      btn.textContent = `${cat.emoji || ''} ${cat.name}`;
+      btn.addEventListener('click', async () => {
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        await renderAllPosts(cat.slug);
+      });
+      container.appendChild(btn);
+    });
+  } catch (_) {}
+}
+
 // ── PAGE INIT ─────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -233,8 +277,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     await renderHomepagePosts();
   }
 
-  // Category counts (homepage cat strip)
+  // Category counts (homepage cat strip) + dynamic cat cards
   renderCategoryCounts();
+  renderDynamicCategoryCards();
+
+  // Dynamic filter tabs (blog.html)
+  renderDynamicFilterTabs();
 
   // Category page (trading, books, trips, cooking)
   const catPage = document.body.dataset.cat;

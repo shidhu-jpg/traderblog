@@ -3,15 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cooking | ManjunathswamyNH</title>
-  <meta name="description" content="Karnataka recipes, high-protein meals for traders, and food experiments by Manjunathswamy Hiremath." />
+  <title>Category | ManjunathswamyNH</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/premium.css" />
 </head>
-<body data-cat="cooking">
+<body>
 
 <nav class="navbar">
   <div class="container nav-inner">
@@ -24,7 +23,7 @@
       <li><a href="trading.html">Trading</a></li>
       <li><a href="book-reviews.html">Books</a></li>
       <li><a href="trips.html">Trips</a></li>
-      <li><a href="cooking.html" class="active">Cooking</a></li>
+      <li><a href="cooking.html">Cooking</a></li>
       <li><a href="spirituality.html">Spirituality</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="contact.html">Contact</a></li>
@@ -41,11 +40,11 @@
   </div>
 </nav>
 
-<section class="page-hero" style="background:linear-gradient(135deg,#200A06 0%,#2A0D08 50%,#180706 100%)">
+<section class="page-hero" id="cat-hero">
   <div class="container">
-    <span class="tag tag-cooking">🍳 Cooking</span>
-    <h1>Cooking</h1>
-    <p>Traditional Karnataka recipes, high-protein meals that fuel sharp trading mornings, and weekend kitchen experiments.</p>
+    <span class="tag" id="cat-tag" style="background:rgba(255,255,255,0.1);color:white">📁 Category</span>
+    <h1 id="cat-name">Loading...</h1>
+    <p id="cat-desc"></p>
   </div>
 </section>
 
@@ -60,9 +59,9 @@
 <section class="section newsletter-section" style="padding:4rem 0">
   <div class="container">
     <div class="newsletter-inner">
-      <div class="section-label light">Weekly Recipes</div>
-      <h2>Get New Recipes in Your Inbox</h2>
-      <p>Traditional Karnataka food meets modern nutrition — subscribe for weekly recipes.</p>
+      <div class="section-label light">Stay Updated</div>
+      <h2>Get New Posts in Your Inbox</h2>
+      <p>Subscribe to get my latest articles delivered directly to you.</p>
       <form class="newsletter-form" onsubmit="return false">
         <input type="email" placeholder="Your email address" required />
         <button type="submit" class="btn btn-primary">Subscribe</button>
@@ -76,7 +75,7 @@
     <div class="footer-bottom" style="border-top:1px solid var(--border);padding-top:1.5rem;margin-top:0">
       <span>© 2026 ManjunathswamyNH. All rights reserved.</span>
       <div class="flex gap-2">
-        <a href="index.html">Home</a><a href="about.html">About</a><a href="contact.html">Contact</a>
+        <a href="index.html">Home</a><a href="blog.html">All Posts</a><a href="contact.html">Contact</a>
       </div>
     </div>
   </div>
@@ -92,5 +91,41 @@
 <script src="js/main.js"></script>
 <script src="js/animations.js"></script>
 <script src="js/nav-categories.js"></script>
+<script>
+  function hexToRgba(hex, alpha) {
+    const r = parseInt(hex.slice(1,3), 16);
+    const g = parseInt(hex.slice(3,5), 16);
+    const b = parseInt(hex.slice(5,7), 16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    const slug = new URLSearchParams(location.search).get('cat');
+    if (!slug) { window.location.href = 'blog.html'; return; }
+
+    try {
+      const snap = await firebase.firestore()
+        .collection('categories').where('slug', '==', slug).limit(1).get();
+
+      if (!snap.empty) {
+        const cat = snap.docs[0].data();
+        document.title = `${cat.name} | ManjunathswamyNH`;
+        document.getElementById('cat-name').textContent = cat.name;
+        document.getElementById('cat-desc').textContent = cat.description || '';
+        document.getElementById('cat-tag').textContent  = `${cat.emoji || '📁'} ${cat.name}`;
+        if (cat.color) {
+          document.getElementById('cat-hero').style.background =
+            `linear-gradient(135deg, ${hexToRgba(cat.color, 0.18)} 0%, ${hexToRgba(cat.color, 0.32)} 50%, ${hexToRgba(cat.color, 0.08)} 100%)`;
+          document.getElementById('cat-tag').style.background = hexToRgba(cat.color, 0.18);
+          document.getElementById('cat-tag').style.color = cat.color;
+        }
+      } else {
+        document.getElementById('cat-name').textContent = slug;
+      }
+    } catch (_) {}
+
+    await renderCategoryPage(slug);
+  });
+</script>
 </body>
 </html>
